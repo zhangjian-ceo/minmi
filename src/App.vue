@@ -11,6 +11,7 @@
   width: 100%;
   /*height: 100Vh;*/
   margin-bottom: 0.5rem;
+  /*overflow: hidden;*/
 
 }
 

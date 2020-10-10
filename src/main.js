@@ -13,6 +13,7 @@ import LyTab from 'ly-tab'
 import './assets/css/normalize.css'
 import './assets/css/reset.css'
 import './assets/js/rem'
+import './assets/css/font/iconfont.css'
 
 Vue.use(LyTab)
 Vue.use(VueLazyload)
