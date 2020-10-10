@@ -4,6 +4,8 @@ import Home from "../views/home/Home.vue";
 import Classify from "../views/classify/Classify";
 import Mine from "../views/mine/Mine";
 import Shopping from "../views/shopping/Shopping";
+import Address from "../views/mine/children/Address";
+import NewAddress from "../views/mine/children/NewAddress";
 
 Vue.use(VueRouter);
 
@@ -33,6 +35,16 @@ const routes = [
     name: "shopping",
     component: Shopping
   },
+  {
+    path: "/address",
+    name: "address",
+    component: Address
+  },
+  {
+    path: "/newAddress",
+    name: "newAddress",
+    component: NewAddress
+  }
 
 ];
 
