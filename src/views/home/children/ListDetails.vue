@@ -30,7 +30,19 @@
     <div class="banner" v-for="(item, index) in msg.info_img" :key="index">
       <img :src="item.img" alt="" />
     </div>
-    <div class="add-to-shopping"></div>
+    <div class="add-to-shopping">
+      <ul>
+        <li>
+          <van-icon name="wap-home-o" size="18" />
+          <p>首页</p>
+        </li>
+        <li>
+          <van-icon name="shopping-cart-o" size="18" />
+          <p>购物车</p>
+        </li>
+      </ul>
+      <button>加入购物车</button>
+    </div>
   </div>
 </template>
 
@@ -140,11 +152,31 @@ export default {
   }
   .add-to-shopping{
     width: 90%;
-    height: 0.3rem;
+    height: 0.39rem;
     margin-left: 5%;
     position: fixed;
     bottom: 0.2rem;
-    background: pink;
+    background: #fff;
+    display: flex;
+    border-radius: 0.05rem;
+    align-items: center;
+    ul{
+      display: flex;
+      li{
+        text-align: center;
+        margin-left: 0.15rem;
+      }
+    }
+    button{
+      width: 40%;
+      height: 70%;
+      margin-left: 30%;
+      border-radius: 0.14rem;
+      background: #F56600;
+      color: #fff;
+      border: none;
+      font-size: 0.15rem;
+    }
   }
 }
 </style>
