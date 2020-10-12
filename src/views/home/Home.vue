@@ -7,6 +7,7 @@
         <van-icon name="search" size="18" class="zoom" />
       </div>
     </header>
+    <!--    首页轮播-->
     <div class="carousel">
       <van-swipe :autoplay="3000">
         <van-swipe-item v-for="(item, index) in msg" :key="index">
@@ -38,6 +39,7 @@
         </li>
       </ul>
     </nav>
+    <!--    商品列表-->
     <div class="list">
       <ul>
         <li
