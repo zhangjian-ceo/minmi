@@ -5,16 +5,30 @@
             <p>收获地址</p>
             <van-icon name="search" size="25" class="h-right"/>
         </div>
-        <ul class="content" v-for="item in arr" :key="item.id">
+        <ul class="content" v-for="(item,index) in arr" :key="item.id">
             <li>
                 <p>{{item.name}}</p>
                 <p style="color: #2F2F2F">{{item.phone}}<span>[默认]</span></p>
-                <p style="color:#A2A2A2">删除</p>
+                <p style="color:#A2A2A2" @click="deleteAddress(index)">删除</p>
             </li>
             <li style="border-bottom: none">
                 <div class="text">
                     <h1>{{item.address_region}}</h1>
                     <h1 style="margin-top: 0.04rem;">{{item.address_info}}</h1>
+                </div>
+                <van-icon name="arrow" size="20" class="luo"/>
+            </li>
+        </ul>
+        <ul class="content" v-for="(item,index) in receive" :key="index">
+            <li>
+                <p>{{item.name}}</p>
+                <p style="color: #2F2F2F">{{item.tel}}<span>[默认]</span></p>
+                <p style="color:#A2A2A2" @click="deletesAddress(index)">删除</p>
+            </li>
+            <li style="border-bottom: none">
+                <div class="text">
+                    <h1>{{item.province}}</h1>
+                    <h1 style="margin-top: 0.04rem;">{{item.addressDetail}}</h1>
                 </div>
                 <van-icon name="arrow" size="20" class="luo"/>
             </li>
@@ -29,30 +43,47 @@
         name: "Address",
         data(){
             return{
-                arr:{}
+                arr:{},
+                receive:[]
             }
         },
         methods:{
+            //渲染数据
             addeds(){
                 added().then(res=>{
-                    // console.log(res)
                     this.arr=res
                 })
             },
+            //跳转
             skipnew(){
                 this.$router.push('newaddress')
             },
+            //返回我的
             gomine(){
                this.$router.push('mine')
+            },
+            //删除地址
+            deleteAddress:function(i){
+                this.arr.splice(i,1);
+            },
+            //删除新添加地址
+            deletesAddress:function(i){
+                this.receive.splice(i,1);
+                sessionStorage.removeItem('arr')
             }
         },
         created() {
-            this.addeds()
+            this.addeds();
+            //添加新地址
+            this.receive = (JSON.parse(sessionStorage.getItem('arr')))
         }
     }
 </script>
 
 <style scoped lang="less">
+    .address{
+        margin-bottom: 1.1rem;
+    }
     .header{
         width: 100%;
         height: 0.5rem;
@@ -100,7 +131,6 @@
                 }
             }
             .text{
-                /*line-height: 0.5rem;*/
                 margin-top: 0.1rem;
                 h1{
                     font-size: 0.14rem;

@@ -27,11 +27,19 @@
             return {
                 areaList:coutry,
                 searchResult: [],
+                parameters:{},
+                arr:[],
             };
         },
         methods: {
-            onSave() {
-                Toast('save');
+            //添加地址
+            onSave(content) {
+                Toast('添加成功');
+                //this.parameters=content;
+                this.arr = JSON.parse(sessionStorage.getItem('arr')) || [];
+                this.arr.push(content)
+                sessionStorage.setItem('arr',JSON.stringify(this.arr));
+                this.$router.push('address')
             },
             onDelete() {
                 Toast('delete');
@@ -48,9 +56,11 @@
                     this.searchResult = [];
                 }
             },
+            //跳转
             goadress(){
                 this.$router.push('address')
-            }
+            },
+
         },
     };
 </script>
