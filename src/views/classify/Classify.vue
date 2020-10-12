@@ -11,34 +11,42 @@
     </div>
     <div class="c_bottom">
       <div class="b_left" ref="abc">
-        <div>
-          <ul class="kpl">
-            <li class="lpl" v-for="item in arr" :key="item.id">
-              {{ item.left }}
-            </li>
-          </ul>
-        </div>
+        <ul class="kpl" v-if="arr.length !== 0">
+          <li
+            class="lpl"
+            @click="chit(index)"
+            :class="index === currentlpl ? 'nb' : ''"
+            v-for="(item, index) in arr"
+            :key="index"
+          >
+            {{ item.left }}
+          </li>
+        </ul>
       </div>
       <div class="kr" ref="def">
-        <div class="b_right" v-for="item in arr" :key="item.title">
-          <div>
+        <div>
+          <div class="b_right" v-for="(item, index) in arr" :key="index">
             <div class="r_picture">
-              <img :src="item.info[0].title_img" alt="">
+              <img :src="item.info[0].title_img" alt="" />
             </div>
             <div class="r_catalogue">
               <div class="c_left"></div>
-              <div class="c_content">{{item.info[0].title}}</div>
+              <div class="c_content">{{ item.info[0].title }}</div>
               <div class="c_right"></div>
             </div>
             <div class="r_content">
               <ul class="die">
-                <li class="er" v-for="item2 in item.info[0].list" :key="item2.img">
-                  <img :src="item2.img" alt="" class="imgs">
-                  <p>{{item2.name}}</p>
+                <li
+                  class="er"
+                  v-for="(item2, index) in item.info[0].list"
+                  :key="index"
+                >
+                  <img :src="item2.img" alt="" class="imgs" />
+                  <p>{{ item2.name }}</p>
                 </li>
               </ul>
             </div>
-            <div class="r_more">查看更多</div>
+            <van-button class="giao" type="primary" block>查看更多</van-button>
           </div>
         </div>
       </div>
@@ -48,40 +56,85 @@
 
 <script>
 import { nava } from "../../api";
-import BetterScroll from "better-scroll"
+import BetterScroll from "better-scroll";
+
 export default {
   name: "Classify",
   data() {
     return {
       arr: [],
+      serkpl: 0,
+      serkr: [],
+      searimg: null
     };
   },
   methods: {
+    //请求数据
     navs() {
       nava().then(res => {
         // console.log(res)
         this.arr = res;
-        console.log(this.arr);
+        // console.log(this.arr);
       });
     },
+    //点击左边导航栏
     Betters() {
-      new BetterScroll(this.$refs.abc, {
-
+      this.searimg = new BetterScroll(this.$refs.abc, {
+        click: true
       });
-      new BetterScroll(this.$refs.def, {
-
+      this.rightBcrll = new BetterScroll(this.$refs.def, {
+        probeType: 3
+      });
+      this.rightBcrll.on("scroll", pos => {
+        this.serkpl = Math.floor(Math.abs(pos.y));
+        console.log(this.serkpl);
       });
     },
+    Berlpl() {
+      let lis = this.$refs.def.querySelectorAll(".b_right");
+      let tempArr = [];
+      let top = 0;
+      tempArr.push(top);
+      lis.forEach((item, index) => {
+        if (index === lis.length - 1) {
+          item.style.paddingBottom = `${window.innerHeight -
+            item.clientHeight -
+            76}px`;
+          this.rightBcrll.refresh();
+        }
+        top += lis[index].clientHeight;
+        tempArr.push(top);
+      });
+      this.serkr = tempArr;
+    },
+    Berain(i) {
+      let sil = this.$refs.abc.querySelectorAll(".lpl");
+      let el = sil[i];
+      this.searimg.scrollToElement(el, 300);
+    },
+    chit(i) {
+      this.scrollY = this.serkr[i];
+      this.rightBcrll.scrollTo(0, -this.scrollY, 300);
+    }
   },
-  mounted() {},
   created() {
+    //调用请求数据函数
     this.navs();
   },
-  watch:{
+  computed: {
+    currentlpl() {
+      return this.serkr.findIndex((item, index) => {
+        this.Berain(index);
+        return this.serkpl >= item && this.serkpl < this.serkr[index + 1];
+      });
+    }
+  },
+  watch: {
     arr(val) {
       if (val) {
         this.$nextTick(() => {
           this.Betters();
+          this.Berlpl();
         });
       }
     }
@@ -92,8 +145,7 @@ export default {
 <style scoped lang="less">
 .classify {
   width: 100%;
-  height: 100vh;
-  /*overflow: hidden;*/
+  /*height: 100vh;*/
 }
 .c_top {
   width: 100%;
@@ -101,6 +153,7 @@ export default {
   background: #f2f2f2;
   position: fixed;
   top: 0;
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   .t_left {
@@ -119,77 +172,73 @@ export default {
 }
 .c_bottom {
   width: 100%;
-  /*height: 100vh;*/
   position: fixed;
   top: 0.45rem;
+  bottom: 0.45rem;
   display: flex;
 }
 .b_left {
   width: 15%;
-  height: 100%;
-  /*background: red;*/
   .kpl {
     width: 100%;
-    height: 100%;
     .lpl {
       width: 100%;
       height: 0.46rem;
-      /*border-right: 0.04rem solid #E02E24;*/
-      /*color: #E02E24;*/
-      font-size: 0.15rem;
+      font-size: 0.16rem;
+      /*color: #666666;*/
       text-align: center;
       line-height: 0.46rem;
     }
   }
 }
-.kr{
+.kr {
   width: 85%;
-  height: 100%;
+  /*height: 100%;*/
   .b_right {
     width: 100%;
     height: 3.83rem;
     overflow: hidden;
     /*background: #55a532;*/
-    .r_picture{
+    .r_picture {
       margin-left: 0.12rem;
       margin-top: 0.1rem;
       margin-bottom: 0.12rem;
       width: 100%;
       height: 1rem;
-      img{
+      img {
         width: 2.8rem;
         height: 1rem;
         margin-bottom: 0.12rem;
       }
     }
-    .r_catalogue{
+    .r_catalogue {
       display: flex;
       margin-left: 1.1rem;
       margin-bottom: 0.23rem;
-      .c_left{
+      .c_left {
         width: 0.17rem;
         height: 0.01rem;
-        background: #E0E0E0;
+        background: #e0e0e0;
         margin-right: 0.17rem;
         margin-top: 0.05rem;
       }
-      .c_content{
+      .c_content {
         font-size: 0.14rem;
         color: #000;
         margin-right: 0.13rem;
       }
-      .c_right{
+      .c_right {
         width: 0.17rem;
         height: 0.01rem;
-        background: #E0E0E0;
+        background: #e0e0e0;
         margin-top: 0.05rem;
       }
     }
-    .r_content{
+    .r_content {
       width: 100%;
       height: 1.84rem;
 
-      .die{
+      .die {
         width: 2.3rem;
         height: 100%;
         margin-left: 0.42rem;
@@ -197,31 +246,40 @@ export default {
         justify-content: space-between;
         text-align: center;
         flex-wrap: wrap;
-        .er{
+        .er {
           width: 33.33333%;
           height: 1.05rem;
-          .imgs{
+          .imgs {
             width: 0.33rem;
             height: 0.4rem;
             margin-bottom: 0.13rem;
           }
-          p{
+          p {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
             font-size: 0.12rem;
             color: #757575;
           }
         }
       }
     }
-    .r_more{
+    .giao {
       width: 80%;
       height: 0.34rem;
-      background: #F9F5E6;
+      background: #f9f5e6;
+      border: 0.01rem solid #f9f5e6;
       font-size: 0.17rem;
-      color: #AEA38D;
+      color: #aea38d;
       text-align: center;
       line-height: 0.34rem;
       margin-left: 10%;
     }
   }
+}
+.nb {
+  border-right: 0.04rem solid #e02e24;
+  color: #e02e24;
 }
 </style>
